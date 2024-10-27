@@ -8,5 +8,10 @@
         public int FeedBackId { get; set; }
         public int CommitId { get; set; }
         public DateTime Created { get; set; }
+        
+        
+        public User User { get; set; }
+
+        public FeedBack FeedBack { get; set; }
     }
 }

@@ -6,6 +6,8 @@
         public string Name { get; set; }
         public string Email { get; set; }
         public string NickName { get; set; }
-        public IFormFile Photo { get; set; }
+        public ICollection<Upload> Uploads { get; set; }
+
+        public ICollection<Commit> Commits { get; set; }
     }
 }
