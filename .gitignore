@@ -332,7 +332,7 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-.appsettings.json
+appsettings.json
 
 # OpenCover UI analysis results
 OpenCover/
@@ -363,3 +363,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/appsettings.json
