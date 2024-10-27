@@ -2,6 +2,7 @@
 using FeedBackApp.DTOs;
 using FeedBackApp.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeedBackApp.Controllers
 {
@@ -66,6 +67,16 @@ namespace FeedBackApp.Controllers
             {
                 return "Silinemedi." + e.Message;
             }
+        }
+        [HttpGet("/Category/{id}")]
+        public IActionResult GetInvoicesByStatus(int id)
+        {
+            var category = _context.FeedBacks
+                .Include(x =>x.Category)
+                .Where(x => x.Category.Id== id)
+                .ToList();
+            
+            return Ok(category);
         }
     }
 }
