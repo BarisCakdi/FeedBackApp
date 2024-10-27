@@ -26,6 +26,7 @@ namespace FeedBackApp
                 app.UseSwagger();
                 app.UseSwaggerUI();
             //}
+            builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             app.UseHttpsRedirection();
 
