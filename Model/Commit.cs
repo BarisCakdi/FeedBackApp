@@ -10,7 +10,6 @@
         public DateTime Created { get; set; }
         
         
-        public User User { get; set; }
 
         public FeedBack FeedBack { get; set; }
     }

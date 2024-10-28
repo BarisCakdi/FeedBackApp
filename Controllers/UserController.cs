@@ -29,22 +29,18 @@ namespace FeedBackApp.Controllers
             {
                 return BadRequest(new { message = "Eksik veya hatalı giriş yaptınız." });
             }
-            var data = new User();
+            var data = new ApplicationUser();
 
             if (model.Id is not 0)
             {
                 data = _context.Users.Find(model.Id);
-                data.Name = model.Name;
                 data.Email = model.Email;
-                data.NickName = model.NickName;
                 
                 _context.Users.Update(data);
             }
             else
             {
-                data.Name = model.Name;
                 data.Email = model.Email;
-                data.NickName = model.NickName;
                 
                 
                 _context.Users.Add(data);
@@ -53,7 +49,7 @@ namespace FeedBackApp.Controllers
 
             _context.SaveChanges();
 
-            return Ok($"Kullanıcı Başarıyla eklendi.{data.Id}");
+            return Ok($"Kullanıcı Başarıyla eklendi.");
         }
         [HttpDelete("{id}")]
         public string DeleteClient(int id)
