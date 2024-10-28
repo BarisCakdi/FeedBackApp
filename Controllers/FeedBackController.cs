@@ -74,7 +74,7 @@ namespace FeedBackApp.Controllers
                 return NotFound("Feed bulunamadı.");
             }
 
-            _context.FeedBacks.Remove(invoice);
+            _context.FeedBacks.Remove(invoice);// remove değiştir
             _context.SaveChanges();
 
             return Ok("Feed başarıyla silindi.");

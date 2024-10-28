@@ -21,14 +21,9 @@ public class Program
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
-        
-        builder.Services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            });
 
-        
+        builder.Services.AddControllers();
+
         // builder.Services.AddControllers();
         builder.Services.AddAuthentication(options =>
         {

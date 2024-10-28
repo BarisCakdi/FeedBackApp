@@ -7,9 +7,6 @@
         public int UserId { get; set; }
 
         public FeedBack FeedBack { get; set; }
-        
-       
-
        
     }
 }
