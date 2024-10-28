@@ -22,12 +22,18 @@ namespace FeedBackApp.Controllers
         {
             var feedBack = _context.FeedBacks
                 .Include(x => x.Category)
-                .Include(x => x.UploadsCount)
                 .Include(x => x.Commits)
                 .OrderByDescending(x => x.UploadsCount)
                 .ToList();
+
+            if (!feedBack.Any())
+            {
+                return NotFound("Henüz herhangi bir geri bildirim bulunmamaktadır.");
+            }
+
             return Ok(feedBack);
         }
+
         [HttpPost]
         public IActionResult Save([FromBody] dtoFeedBack model)
         {
