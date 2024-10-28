@@ -1,46 +1,65 @@
-using FeedBackApp.Data;
+using System.Reflection;
 using FeedBackApp.Data;
 using FeedBackApp.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
-namespace InvoiceApp
+namespace FeedBackApp;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+        
+        builder.Services.AddControllers();
+        builder.Services.AddAuthentication(options =>
         {
-            var builder = WebApplication.CreateBuilder(args);
+            options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+        });
+        
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo{ Title = "Feedback API", Version = "v1"});
+            // var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            // c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            
+            // c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+        });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+        var app = builder.Build();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+        // Configure the HTTP request pipeline.
+        // if (app.Environment.IsDevelopment())
+        // {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Feedback API V1");
+            c.RoutePrefix = string.Empty;
+        });
+        // }
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            var app = builder.Build();
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+        app.UseHttpsRedirection();
 
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            app.UseSwagger();
-            app.UseSwaggerUI();
-            //}
+        app.UseAuthentication();
+        
+        app.UseAuthorization();
 
-            app.UseHttpsRedirection();
+        app.MapControllers();
 
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
-        }
+        app.Run();
     }
 }
