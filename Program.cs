@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json.Serialization;
 using FeedBackApp.Data;
 using FeedBackApp.Model;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +22,14 @@ public class Program
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
         
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
+
+        
+        // builder.Services.AddControllers();
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
