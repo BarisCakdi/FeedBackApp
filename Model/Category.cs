@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public ICollection<FeedBack> FeedBacks { get; set; }
         
+        //denene
     }
 }
