@@ -1,5 +1,7 @@
 using FeedBackApp.Data;
 using FeedBackApp.Data;
+using FeedBackApp.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceApp
@@ -20,6 +22,9 @@ namespace InvoiceApp
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
             // Configure the HTTP request pipeline.
             //if (app.Environment.IsDevelopment())
