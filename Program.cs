@@ -33,8 +33,8 @@ public class Program
         builder.Services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo{ Title = "Feedback API", Version = "v1"});
-            // var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            // c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             
             // c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
         });
