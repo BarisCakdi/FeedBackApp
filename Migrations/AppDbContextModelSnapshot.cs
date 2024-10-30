@@ -118,7 +118,14 @@ namespace FeedBackApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -134,7 +141,7 @@ namespace FeedBackApp.Migrations
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CommitId")
+                    b.Property<int?>("CommitId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
@@ -147,8 +154,9 @@ namespace FeedBackApp.Migrations
                     b.Property<int>("FeedBackId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -184,9 +192,15 @@ namespace FeedBackApp.Migrations
                     b.Property<int>("UploadsCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("FeedBacks");
                 });
@@ -353,13 +367,11 @@ namespace FeedBackApp.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("FeedBackApp.Model.FeedBack", "FeedBack")
+                    b.HasOne("FeedBackApp.Model.FeedBack", null)
                         .WithMany("Commits")
                         .HasForeignKey("FeedBackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("FeedBack");
                 });
 
             modelBuilder.Entity("FeedBackApp.Model.FeedBack", b =>
@@ -370,7 +382,15 @@ namespace FeedBackApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FeedBackApp.Model.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FeedBackApp.Model.Upload", b =>

@@ -1,4 +1,5 @@
-﻿using FeedBackApp.Model;
+﻿using FeedBackApp.DTOs;
+using FeedBackApp.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ namespace FeedBackApp.Data
         
         public DbSet<FeedBack> FeedBacks { get; set; }
 
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<dtoCategory> Categories { get; set; }
 
         public DbSet<Commit> Commits { get; set; }
 
@@ -21,6 +22,12 @@ namespace FeedBackApp.Data
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => c.Slug)
+                .IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
 

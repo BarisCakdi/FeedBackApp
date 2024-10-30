@@ -17,7 +17,7 @@
         public int UploadsCount { get; set; }
         public UpdateStatus UpdateStatus { get; set; }
         public ICollection<Commit> Commits { get; set; }
-        public Category? Category { get; set; }
+        public Category Category { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
     }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeedBackApp.Controllers;
-
+// [Authorize] //demek her birnizi login olmalısınız he demek IActionResultra diyor
 [ApiController]
 [Route("[controller]")]
 public class AuthController : Controller

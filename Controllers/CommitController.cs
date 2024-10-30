@@ -29,18 +29,19 @@ namespace FeedBackApp.Controllers
             {
                 return BadRequest(new { message = "Eksik veya hatalı giriş yapıldı" });
             }
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = (User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var newCommit = new Commit
+            var data = new Commit();
             {
-                Description = model.Description,
-                UserId = model.UserId,
-                FeedBackId = model.FeedBackId,
-                CommitId = model.CommitId, // Üst Commit ID (üst yorum varsa)
-                Created = DateTime.UtcNow
-            };
+                data.Description = model.Description;
+                data.UserId = userId;
+                data.FeedBackId = model.FeedBackId;
+                data.CommitId = model.CommitId; // Üst Commit ID (üst yorum varsa)
+                data.Created = DateTime.UtcNow;
+            }
+            
 
-            _context.Commits.Add(newCommit);
+            _context.Commits.Add(data);
             _context.SaveChanges();
 
             return Ok(new { message = "Yorum başarıyla eklendi" });
