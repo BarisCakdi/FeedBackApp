@@ -10,7 +10,7 @@ namespace FeedBackApp.Data
         
         public DbSet<FeedBack> FeedBacks { get; set; }
 
-        public DbSet<dtoCategory> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public DbSet<Commit> Commits { get; set; }
 

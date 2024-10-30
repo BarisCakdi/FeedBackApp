@@ -24,31 +24,33 @@ namespace FeedBackApp.Controllers
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetCategoryBySlug(string slug)
         {
-
-            var category = _context.Categories
+        
+            var category = await _context.Categories
+                .Include(c => c.FeedBacks)
                 .FirstOrDefaultAsync(c => c.Slug == slug);
                 
-
+        
             if (category == null)
             {
                 return NotFound();
             }
-
+        
             return Ok(category);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddCategory([FromBody] dtoCategory model)
+        [HttpPost("/Category")]
+        public IActionResult AddCategory([FromBody] dtoCategory model)
         {
-            if (_context.Categories.Any(c => c.Name == model.Name))
+            var data = new Category();
             {
-                return BadRequest("Bu isimde bir kategori zaten var.");
+                data.Name = model.Name;
+                
             }
-
-            model.Slug = await GenerateUniqueSlugAsync(model.Name, _context);
-            _context.Categories.Add(model);
-            await _context.SaveChangesAsync();
-
+        
+            
+            
+            _context.SaveChangesAsync();
+        
             return Ok(model);
         }
 
@@ -74,17 +76,19 @@ namespace FeedBackApp.Controllers
                 return StatusCode(500, "Silinemedi: " + e.Message);
             }
         }
+        
+        [HttpGet]
 
-        private async Task<string> GenerateUniqueSlugAsync(string name, AppDbContext context)
+        private string GenerateUniqueSlug(string name, AppDbContext context)
         {
             var slug = SlugHelper.GenerateSlug(name);
-            var slugExists = await context.Categories.AnyAsync(c => c.Slug == slug);
+            var slugExists =  context.Categories.AnyAsync(c => c.Slug == slug);
 
             var suffix = 1;
-            while (slugExists)
+            while (slugExists != null)
             {
                 slug = $"{SlugHelper.GenerateSlug(name)}-{suffix++}";
-                slugExists = await context.Categories.AnyAsync(c => c.Slug == slug);
+                slugExists =  context.Categories.AnyAsync(c => c.Slug == slug);
             }
 
             return slug;
