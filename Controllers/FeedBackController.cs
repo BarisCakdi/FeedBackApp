@@ -1,8 +1,10 @@
 ﻿using FeedBackApp.Data;
 using FeedBackApp.DTOs;
 using FeedBackApp.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace FeedBackApp.Controllers
 {
@@ -34,6 +36,7 @@ namespace FeedBackApp.Controllers
             return Ok(feedBack);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Save([FromBody] dtoFeedBack model)
         {
@@ -41,6 +44,15 @@ namespace FeedBackApp.Controllers
             {
                 return BadRequest(new { message = "Eksik veya hatalı giriş yapıldı" });
             }
+
+            // Kullanıcı ID'sini elde et
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest(new { message = "Geçersiz kullanıcı" });
+            }
+
             var data = new FeedBack();
 
             if (model.Id == 0)
@@ -49,18 +61,27 @@ namespace FeedBackApp.Controllers
                 data.Description = model.Description;
                 data.CategoryId = model.CategoryId;
                 data.UpdateStatus = UpdateStatus.Planed;
+                data.UserId = userId; // Kullanıcı ID'sini ekle
                 _context.FeedBacks.Add(data);
-                _context.SaveChanges();
             }
             else
             {
                 data = _context.FeedBacks.Find(model.Id);
+                if (data == null)
+                {
+                    return NotFound(new { message = "FeedBack bulunamadı" });
+                }
+
                 data.Title = model.Title;
                 data.Description = model.Description;
                 data.CategoryId = model.CategoryId;
                 data.UpdateStatus = (UpdateStatus)model.UpdateStatus;
+                data.UserId = userId; // Kullanıcı ID'sini ekle
                 _context.FeedBacks.Update(data);
+
             }
+            _context.SaveChanges();
+
             return Ok(new { messsage = "Feed Eklendi" });
         }
 
