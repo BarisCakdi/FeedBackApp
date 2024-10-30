@@ -1,4 +1,6 @@
-﻿namespace FeedBackApp.Model
+﻿using System.Text.Json.Serialization;
+
+namespace FeedBackApp.Model
 {
     public enum UpdateStatus
     {
@@ -17,8 +19,10 @@
         public int UploadsCount { get; set; }
         public UpdateStatus UpdateStatus { get; set; }
         public ICollection<Commit> Commits { get; set; }
+        [JsonIgnore]
         public Category Category { get; set; }
         public string UserId { get; set; }
+        [JsonIgnore]
         public ApplicationUser User { get; set; }
     }
 }

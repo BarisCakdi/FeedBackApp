@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FeedBackApp.DTOs;
 using FeedBackApp.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FeedBackApp.Controllers
 {
@@ -20,38 +21,58 @@ namespace FeedBackApp.Controllers
         {
             _context = context;
         }
+        [HttpGet("/Category")]
+        public IActionResult Category()
+        {
+            var feedBack = _context.Categories
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Name
+                })
+                .ToArray();
+
+            if (!feedBack.Any())
+            {
+                return NotFound("Henüz herhangi bir kategori bildirim bulunmamaktadır.");
+            }
+
+            return Ok(feedBack);
+        }
 
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetCategoryBySlug(string slug)
         {
-        
             var category = await _context.Categories
                 .Include(c => c.FeedBacks)
                 .FirstOrDefaultAsync(c => c.Slug == slug);
-                
-        
+
             if (category == null)
             {
                 return NotFound();
             }
-        
+
             return Ok(category);
         }
-
+        [Authorize]
         [HttpPost("/Category")]
-        public IActionResult AddCategory([FromBody] dtoCategory model)
+        public async Task<IActionResult> AddCategory([FromBody] dtoCategory model)
         {
-            var data = new Category();
+            if (_context.Categories.Any(c => c.Name == model.Name))
             {
-                data.Name = model.Name;
-                
+                return BadRequest("Bu isimde bir kategori zaten var.");
             }
-        
-            
-            
-            _context.SaveChangesAsync();
-        
-            return Ok(model);
+
+            var category = new Category
+            {
+                Name = model.Name,
+                Slug = await GenerateUniqueSlug(model.Name) // Benzersiz slug oluşturma
+            };
+
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+
+            return Ok(category);
         }
 
         [HttpDelete("{id}")]
@@ -76,19 +97,17 @@ namespace FeedBackApp.Controllers
                 return StatusCode(500, "Silinemedi: " + e.Message);
             }
         }
-        
-        [HttpGet]
 
-        private string GenerateUniqueSlug(string name, AppDbContext context)
+        private async Task<string> GenerateUniqueSlug(string name)
         {
             var slug = SlugHelper.GenerateSlug(name);
-            var slugExists =  context.Categories.AnyAsync(c => c.Slug == slug);
+            var slugExists = await _context.Categories.AnyAsync(c => c.Slug == slug);
 
             var suffix = 1;
-            while (slugExists != null)
+            while (slugExists)
             {
                 slug = $"{SlugHelper.GenerateSlug(name)}-{suffix++}";
-                slugExists =  context.Categories.AnyAsync(c => c.Slug == slug);
+                slugExists = await _context.Categories.AnyAsync(c => c.Slug == slug);
             }
 
             return slug;
