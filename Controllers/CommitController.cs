@@ -20,6 +20,10 @@ namespace FeedBackApp.Controllers
         {
             _context = context;
         }
+        
+
+        
+
 
         // Yeni bir Commit ekleme
         [HttpPost]
@@ -29,6 +33,7 @@ namespace FeedBackApp.Controllers
             {
                 return BadRequest(new { message = "Eksik veya hatalı giriş yapıldı" });
             }
+
             var userId = (User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             var data = new Commit();
@@ -39,7 +44,7 @@ namespace FeedBackApp.Controllers
                 data.CommitId = model.CommitId; // Üst Commit ID (üst yorum varsa)
                 data.Created = DateTime.UtcNow;
             }
-            
+
 
             _context.Commits.Add(data);
             _context.SaveChanges();

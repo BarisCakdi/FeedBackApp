@@ -35,6 +35,22 @@ namespace FeedBackApp.Controllers
 
             return Ok(feedBack);
         }
+        
+        [HttpGet("/FeedBack/{id}")]
+        public IActionResult GetFeedbackById(int id)
+        {
+            var feedBack = _context.FeedBacks
+                .Include(x => x.Category)
+                .Include(x => x.Commits)
+                .FirstOrDefault(x => x.Id == id);
+
+            if (feedBack == null)
+            {
+                return NotFound("Bu ID'ye sahip geri bildirim bulunamadı.");
+            }
+
+            return Ok(feedBack);
+        }
 
         [Authorize]
         [HttpPost]
