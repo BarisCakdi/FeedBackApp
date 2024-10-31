@@ -37,6 +37,7 @@ namespace FeedBackApp.Controllers
                         Commit =
                         f.Commits,
                         
+                        
                     
                 })
                 .ToList();
@@ -58,12 +59,12 @@ namespace FeedBackApp.Controllers
                 .Include(x => x.Category)
                 .Include(x => x.Commits)
                 .FirstOrDefault(x => x.Id == id);
-
+        
             if (feedBack == null)
             {
                 return NotFound("Bu ID'ye sahip geri bildirim bulunamadı.");
             }
-
+        
             return Ok(feedBack);
         }
 
@@ -79,18 +80,20 @@ namespace FeedBackApp.Controllers
             // Kullanıcı ID'sini elde et
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            var username = User.FindFirstValue(ClaimTypes.Name);
             if (string.IsNullOrEmpty(userId))
             {
                 return BadRequest(new { message = "Geçersiz kullanıcı" });
             }
-
+            
             var data = new FeedBack();
 
             if (model.Id == 0)
             {
                 data.Title = model.Title;
                 data.Description = model.Description;
-                data.CategoryId = model.CategoryId;
+                data.CategoryId = model.CategoryId; 
+                // data.Category.Name = categoryName;
                 data.UpdateStatus = UpdateStatus.Planed;
                 data.UserId = userId; // Kullanıcı ID'sini ekle
                 _context.FeedBacks.Add(data);
@@ -112,8 +115,10 @@ namespace FeedBackApp.Controllers
 
             }
             _context.SaveChanges();
-
-            return Ok(new { messsage = "Feed Eklendi" });
+           
+            
+            return Ok(new { messsage = "Feed Eklendi"  });
+            
         }
 
         [HttpDelete]

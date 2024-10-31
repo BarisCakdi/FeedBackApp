@@ -16,7 +16,10 @@ namespace FeedBackApp.Model
         public string Title { get; set; }
         public string Description { get; set; }
         public int CategoryId { get; set; }
+        
         public int UploadsCount { get; set; }
+        
+        
         public UpdateStatus UpdateStatus { get; set; }
         public ICollection<Commit> Commits { get; set; }
         [JsonIgnore]

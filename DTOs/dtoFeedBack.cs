@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using FeedBackApp.Model;
+using UpdateStatus = System.Data.UpdateStatus;
 
 namespace FeedBackApp.DTOs
 {
@@ -8,8 +9,9 @@ namespace FeedBackApp.DTOs
         public string Title { get; set; }
         public string Description { get; set; }
         public int CategoryId { get; set; }
+
+        public string  CategoryName { get; set; }
         public UpdateStatus UpdateStatus { get; set; }
-
-
+        
     }
 }
