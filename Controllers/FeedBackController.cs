@@ -22,20 +22,35 @@ namespace FeedBackApp.Controllers
         [HttpGet("/FeedBack")]
         public IActionResult FeedBack()
         {
-            var feedBack = _context.FeedBacks
-                .Include(x => x.Category)
-                .Include(x => x.Commits)
+            var feedBacks = _context.FeedBacks
                 .OrderByDescending(x => x.UploadsCount)
+                .Select(f => new
+                {
+                  Category =
+                      f.CategoryId,
+                    f.Category.Name,
+                    f.Id,
+                    f.Title,
+                    f.Description,
+                    f.UploadsCount,
+                    f.UpdateStatus,
+                        Commit =
+                        f.Commits,
+                        
+                    
+                })
                 .ToList();
 
-            if (!feedBack.Any())
+            if (!feedBacks.Any())
             {
                 return NotFound("Henüz herhangi bir geri bildirim bulunmamaktadır.");
             }
 
-            return Ok(feedBack);
+            return Ok(feedBacks);
         }
-        
+
+
+
         [HttpGet("/FeedBack/{id}")]
         public IActionResult GetFeedbackById(int id)
         {
