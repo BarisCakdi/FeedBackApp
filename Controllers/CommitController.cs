@@ -35,11 +35,13 @@ namespace FeedBackApp.Controllers
             }
 
             var userId = (User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var username = User.FindFirstValue(ClaimTypes.Name);
 
             var data = new Commit();
             {
                 data.Description = model.Description;
                 data.UserId = userId;
+                data.UserName = username;
                 data.FeedBackId = model.FeedBackId;
                 data.CommitId = model.CommitId; // Üst Commit ID (üst yorum varsa)
                 data.Created = DateTime.UtcNow;
