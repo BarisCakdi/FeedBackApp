@@ -120,6 +120,44 @@ namespace FeedBackApp.Controllers
             return Ok(new { messsage = "Feed Eklendi"  });
             
         }
+        
+        [Authorize]
+        [HttpPut]
+        public IActionResult Update([FromBody] dtoFeedBack model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Eksik veya hatalı giriş yapıldı" });
+            }
+
+            // Kullanıcı ID'sini elde et
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest(new { message = "Geçersiz kullanıcı" });
+            }
+            
+            var data = new FeedBack();
+
+            if (model.Id !=  0)
+            {
+                data = _context.FeedBacks.Find(model.Id);
+                data.Title = model.Title;
+                data.Description = model.Description;
+                data.CategoryId = model.CategoryId; 
+                data.UpdateStatus = UpdateStatus.Planed;
+                data.UserId = userId; // Kullanıcı ID'sini ekle
+                _context.FeedBacks.Update(data);
+            }
+            
+            _context.SaveChanges();
+           
+            
+            return Ok(new { messsage = "Feed Eklendi"  });
+            
+        }
+        
+        
 
         [HttpDelete]
         public IActionResult Delete(int id)
