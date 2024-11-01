@@ -26,19 +26,16 @@ namespace FeedBackApp.Controllers
                 .OrderByDescending(x => x.UploadsCount)
                 .Select(f => new
                 {
-                  Category =
-                      f.CategoryId,
+                    Category =
+                        f.CategoryId,
                     f.Category.Name,
                     f.Id,
                     f.Title,
                     f.Description,
                     f.UploadsCount,
                     f.UpdateStatus,
-                        Commit =
+                    Commit =
                         f.Commits,
-                        
-                        
-                    
                 })
                 .ToList();
 
@@ -51,7 +48,6 @@ namespace FeedBackApp.Controllers
         }
 
 
-
         [HttpGet("/FeedBack/{id}")]
         public IActionResult GetFeedbackById(int id)
         {
@@ -59,12 +55,12 @@ namespace FeedBackApp.Controllers
                 .Include(x => x.Category)
                 .Include(x => x.Commits)
                 .FirstOrDefault(x => x.Id == id);
-        
+
             if (feedBack == null)
             {
                 return NotFound("Bu ID'ye sahip geri bildirim bulunamadı.");
             }
-        
+
             return Ok(feedBack);
         }
 
@@ -80,47 +76,28 @@ namespace FeedBackApp.Controllers
             // Kullanıcı ID'sini elde et
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var username = User.FindFirstValue(ClaimTypes.Name);
+            
             if (string.IsNullOrEmpty(userId))
             {
                 return BadRequest(new { message = "Geçersiz kullanıcı" });
             }
-            
+
             var data = new FeedBack();
 
-            if (model.Id == 0)
-            {
-                data.Title = model.Title;
-                data.Description = model.Description;
-                data.CategoryId = model.CategoryId; 
-                // data.Category.Name = categoryName;
-                data.UpdateStatus = UpdateStatus.Planed;
-                data.UserId = userId; // Kullanıcı ID'sini ekle
-                _context.FeedBacks.Add(data);
-            }
-            else
-            {
-                data = _context.FeedBacks.Find(model.Id);
-                if (data == null)
-                {
-                    return NotFound(new { message = "FeedBack bulunamadı" });
-                }
 
-                data.Title = model.Title;
-                data.Description = model.Description;
-                data.CategoryId = model.CategoryId;
-                data.UpdateStatus = (UpdateStatus)model.UpdateStatus;
-                data.UserId = userId; // Kullanıcı ID'sini ekle
-                _context.FeedBacks.Update(data);
-
-            }
+            data.Title = model.Title;
+            data.Description = model.Description;
+            data.CategoryId = model.CategoryId;
+            // data.Category.Name = categoryName;
+            data.UpdateStatus = UpdateStatus.Planed;
+            data.UserId = userId; // Kullanıcı ID'sini ekle
+            _context.FeedBacks.Add(data);
             _context.SaveChanges();
-           
-            
-            return Ok(new { messsage = "Feed Eklendi"  });
-            
+
+
+            return Ok(new { messsage = "Feed Eklendi" });
         }
-        
+
         [Authorize]
         [HttpPut]
         public IActionResult Update([FromBody] dtoFeedBack model)
@@ -136,28 +113,26 @@ namespace FeedBackApp.Controllers
             {
                 return BadRequest(new { message = "Geçersiz kullanıcı" });
             }
-            
+
             var data = new FeedBack();
 
-            if (model.Id !=  0)
+            if (model.Id != 0)
             {
                 data = _context.FeedBacks.Find(model.Id);
                 data.Title = model.Title;
                 data.Description = model.Description;
-                data.CategoryId = model.CategoryId; 
+                data.CategoryId = model.CategoryId;
                 data.UpdateStatus = UpdateStatus.Planed;
                 data.UserId = userId; // Kullanıcı ID'sini ekle
                 _context.FeedBacks.Update(data);
             }
-            
+
             _context.SaveChanges();
-           
-            
-            return Ok(new { messsage = "Feed Eklendi"  });
-            
+
+
+            return Ok(new { messsage = "Feed Eklendi" });
         }
-        
-        
+
 
         [HttpDelete]
         public IActionResult Delete(int id)
@@ -169,14 +144,10 @@ namespace FeedBackApp.Controllers
                 return NotFound("Feed bulunamadı.");
             }
 
-            _context.FeedBacks.Remove(invoice);// remove değiştir
+            _context.FeedBacks.Remove(invoice); // remove değiştir
             _context.SaveChanges();
 
             return Ok("Feed başarıyla silindi.");
         }
-
-
-
-      
     }
 }
