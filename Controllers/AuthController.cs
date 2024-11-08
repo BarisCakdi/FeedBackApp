@@ -82,6 +82,7 @@ public class AuthController : Controller
             user.Email,
             user.Avatar,
             user.ImagePath,
+            userId = user.Id,
             user.Nickname
         };
 

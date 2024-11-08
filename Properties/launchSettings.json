@@ -8,6 +8,7 @@
       "sslPort": 44331
     }
   },
+  //launchUrllerde swagger yazıyordu
   "profiles": {
     "http": {
       "commandName": "Project",
