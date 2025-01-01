@@ -6,7 +6,7 @@
       <synchronize>true</synchronize>
       <configured-by-url>true</configured-by-url>
       <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
-      <jdbc-url>Server=104.247.162.242\MSSQLSERVER2019;Initial Catalog=bariscak_Feedback;User Id=bariscak_FeedBackDbUser1;Password=7A0kvd96~; TrustServerCertificate=True</jdbc-url>
+      <jdbc-url>""</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
